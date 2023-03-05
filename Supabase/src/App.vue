@@ -43,9 +43,10 @@ const addTask = async (): Promise<void> => {
   }
 }
 
-const deleteTask = (id: number) => {
-  if (tasks.value) {
-    const index = tasks.value.findIndex((t) => t.id === id)
+const deleteTask = async (id) => {
+  const { data, error } = await supabase.from('tasks').delete().eq('id', id).select('id')
+  if (tasks.value && data) {
+    const index = tasks.value.findIndex((task) => task.id === data[0].id)
     tasks.value.splice(index, 1)
   }
 }
