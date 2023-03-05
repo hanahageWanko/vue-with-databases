@@ -27,18 +27,19 @@ const task: Ref<string> = ref('')
  * functions
  */
 
-const getTasks = async () => {
+const getTasks = async (): Promise<void> => {
   let { data, error, status } = await supabase.from('tasks').select('*')
   tasks.value = data
 }
 
-getTasks()
-
-const addTask = (): void => {
-  if (tasks.value) {
-    tasks.value.push({ id, task: task.value, completed: false })
+const addTask = async (): Promise<void> => {
+  const { data, error } = await supabase
+    .from('tasks')
+    .insert([{ task: task.value }])
+    .select('*')
+  if (tasks.value && data) {
+    tasks.value.push(data[0])
     task.value = ''
-    id++
   }
 }
 
@@ -48,6 +49,11 @@ const deleteTask = (id: number) => {
     tasks.value.splice(index, 1)
   }
 }
+
+/***********
+ * calls
+ */
+getTasks()
 </script>
 
 <template>
