@@ -1,47 +1,57 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+/*************
+ * imports
+ */
+import { ref } from 'vue'
+import type { Ref } from 'vue'
+
+/************
+ * types
+ */
+
+type iTasks = {
+  id: number
+  task: string
+  completed: boolean
+}
+
+/************
+ * variables
+ */
+let id = 0
+const tasks: Ref<iTasks[]> = ref([])
+const task: Ref<string> = ref('')
+
+/***********
+ * functions
+ */
+const addTask = (): void => {
+  tasks.value.push({ id, task: task.value, completed: false })
+  task.value = ''
+  id++
+}
+
+const deleteTask = (id: number) => {
+  const index = tasks.value.findIndex((t) => t.id === id)
+  tasks.value.splice(index, 1)
+}
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
+  <h1>Tasks by Superbase</h1>
+  <ul>
+    <li v-for="t in tasks" :key="t.id" :style="t.completed ? 'text-decoration:line-through' : ''">
+      <span><input type="checkbox" v-model="t.completed" /></span>
+      <span>{{ t.task }}</span>
+      <button @click="deleteTask(t.id)">削除</button>
+    </li>
+  </ul>
+  <form @submit.prevent="addTask">
+    <div>
+      <input v-model="task" />
     </div>
-  </header>
-
-  <main>
-    <TheWelcome />
-  </main>
+    <div>
+      <button type="submit">タスクを登録</button>
+    </div>
+  </form>
 </template>
-
-<style scoped>
-header {
-  line-height: 1.5;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-}
-</style>
