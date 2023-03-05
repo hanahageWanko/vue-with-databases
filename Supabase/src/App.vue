@@ -51,6 +51,18 @@ const deleteTask = async (id) => {
   }
 }
 
+const updateTask = async (task) => {
+  const { data, error } = await supabase
+    .from('tasks')
+    .update({ completed: task.completed })
+    .eq('id', task.id)
+    .select('*')
+  if (tasks.value && data) {
+    const currentTask = tasks.value.find((task) => task.id === data[0].id)
+    currentTask!.completed = data[0].completed
+  }
+}
+
 /***********
  * calls
  */
@@ -61,7 +73,7 @@ getTasks()
   <h1>Tasks by Superbase</h1>
   <ul>
     <li v-for="t in tasks" :key="t.id" :style="t.completed ? 'text-decoration:line-through' : ''">
-      <span><input type="checkbox" v-model="t.completed" /></span>
+      <span><input type="checkbox" v-model="t.completed" @change="updateTask(t)" /></span>
       <span>{{ t.task }}</span>
       <button @click="deleteTask(t.id)">削除</button>
     </li>
