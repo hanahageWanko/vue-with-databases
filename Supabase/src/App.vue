@@ -4,6 +4,7 @@
  */
 import { ref } from 'vue'
 import type { Ref } from 'vue'
+import { supabase } from '../lib/supabase'
 
 /************
  * types
@@ -25,6 +26,14 @@ const task: Ref<string> = ref('')
 /***********
  * functions
  */
+
+const getTasks = async () => {
+  let { data, error, status } = await supabase.from('tasks').select('*')
+  tasks.value = data
+}
+
+getTasks()
+
 const addTask = (): void => {
   tasks.value.push({ id, task: task.value, completed: false })
   task.value = ''
