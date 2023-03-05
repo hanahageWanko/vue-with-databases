@@ -20,7 +20,7 @@ type iTasks = {
  * variables
  */
 let id = 0
-const tasks: Ref<iTasks[]> = ref([])
+const tasks: Ref<{ [x: string]: any }[] | null> = ref([])
 const task: Ref<string> = ref('')
 
 /***********
@@ -35,14 +35,18 @@ const getTasks = async () => {
 getTasks()
 
 const addTask = (): void => {
-  tasks.value.push({ id, task: task.value, completed: false })
-  task.value = ''
-  id++
+  if (tasks.value) {
+    tasks.value.push({ id, task: task.value, completed: false })
+    task.value = ''
+    id++
+  }
 }
 
 const deleteTask = (id: number) => {
-  const index = tasks.value.findIndex((t) => t.id === id)
-  tasks.value.splice(index, 1)
+  if (tasks.value) {
+    const index = tasks.value.findIndex((t) => t.id === id)
+    tasks.value.splice(index, 1)
+  }
 }
 </script>
 
