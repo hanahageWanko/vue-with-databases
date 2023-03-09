@@ -28,13 +28,13 @@ const task: Ref<string> = ref('')
  */
 
 const getTasks = async (): Promise<void> => {
-  let { data, error, status } = await supabase.from('tasks').select('*')
+  let { data, error, status } = await supabase.from('Tasks').select('*')
   tasks.value = data
 }
 
 const addTask = async (): Promise<void> => {
   const { data, error } = await supabase
-    .from('tasks')
+    .from('Tasks')
     .insert([{ task: task.value }])
     .select('*')
   if (tasks.value && data) {
@@ -44,7 +44,7 @@ const addTask = async (): Promise<void> => {
 }
 
 const deleteTask = async (id) => {
-  const { data, error } = await supabase.from('tasks').delete().eq('id', id).select('id')
+  const { data, error } = await supabase.from('Tasks').delete().eq('id', id).select('id')
   if (tasks.value && data) {
     const index = tasks.value.findIndex((task) => task.id === data[0].id)
     tasks.value.splice(index, 1)
@@ -53,7 +53,7 @@ const deleteTask = async (id) => {
 
 const updateTask = async (task) => {
   const { data, error } = await supabase
-    .from('tasks')
+    .from('Tasks')
     .update({ completed: task.completed })
     .eq('id', task.id)
     .select('*')
