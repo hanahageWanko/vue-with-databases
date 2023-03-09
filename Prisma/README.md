@@ -3,6 +3,7 @@
 ## Create Set up
 
 ```bash
+yarn init vue@latest
 yarn add -D typescript ts-node @types/node // TypeScriptインストール
 npx tsc-init // tscの初期化
 yarn add -D prisma // Prismaインストール
