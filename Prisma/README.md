@@ -61,3 +61,28 @@ Examples
   $ prisma db push
 
 ```
+
+## Prisma Studio の起動
+
+`npx prisma studio`
+
+## migrete 関連
+
+```bash
+# 実施
+npx prisma migrate dev // マイグレーション
+or
+npx prisma migrate dev --name init // マイグレーションに名前を付けて実施
+
+# リセット
+npx prisma migrate reset // テーブルの削除 ⇒ 再作成
+
+# モデルの変更
+## ※変更したカラムに既にデータが存在する場合は警告される。無視して実行すると削除される。
+npx prisma db push // マイグレーションファイルの作成なしにデータベースのテーブルに変更を加える
+
+# データベースの状態をschema.prismaに反映する
+## コマンドを実行した場合は既存のデータベースの状態をschema.prismaファイルに反映される
+npx prisma db pull
+
+```
