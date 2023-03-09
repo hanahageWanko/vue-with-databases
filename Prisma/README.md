@@ -94,3 +94,10 @@ npx prisma db pull
 # 手動Seeding
 npx prisma db seed
 ```
+
+## Set up
+
+```bash
+yarn
+yarn dev
+```
