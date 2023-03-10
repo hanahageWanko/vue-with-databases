@@ -1,0 +1,21 @@
+{
+  "extends": "@vue/tsconfig/tsconfig.web.json",
+  "include": ["env.d.ts", "src/**/*", "src/**/*.vue", "index.ts", "index.ts"],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "esModuleInterop": true,
+    "moduleResolution": "node"
+  },
+  "ts-node": {
+    "esm": true // «———— enabling ESM for ts-node
+  },
+
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    }
+  ]
+}
