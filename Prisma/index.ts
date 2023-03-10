@@ -13,6 +13,7 @@ const app = express()
 const port = 3000
 
 app.use(cors())
+app.use(express.json())
 const prisma = new PrismaClient()
 
 /********************************
@@ -20,9 +21,59 @@ const prisma = new PrismaClient()
  */
 app.get('/', (req: Request, res: Response) => res.send('Hello World!'))
 
-app.get('/tasks', async (req: Request, res: Response) => {
-  const tasks = await prisma.tasks.findMany()
-  return res.json(tasks)
+app.get(
+  '/tasks',
+  async (req: Request, res: Response): Promise<express.Response<any, Record<string, any>>> => {
+    const tasks = await prisma.tasks.findMany()
+    return res.json(tasks)
+  }
+)
+
+app.post(
+  '/tasks',
+  async (req: Request, res: Response): Promise<express.Response<any, Record<string, any>>> => {
+    const { task, completed } = req.body
+    const newTask = await prisma.tasks.create({
+      data: {
+        task,
+        completed
+      }
+    })
+    return res.json(newTask)
+  }
+)
+
+app.put('/tasks', async (req: Request, res: Response) => {
+  const id = Number(req.body.id)
+  const { completed }: { completed: boolean } = req.body
+  try {
+    const update = await prisma.tasks.update({
+      where: {
+        id
+      },
+      data: {
+        completed
+      }
+    })
+    return res.json(update)
+  } catch (e) {
+    console.log(e)
+    return res.status(400).json(e)
+  }
+})
+
+app.delete('/tasks', async (req: Request, res: Response) => {
+  const id = Number(req.body.id)
+  try {
+    const response = await prisma.tasks.delete({
+      where: {
+        id
+      }
+    })
+    return res.json(response)
+  } catch (e) {
+    return res.status(400).json(e)
+  }
 })
 
 app.get('/users', async (req: Request, res: Response) => {

@@ -31,15 +31,48 @@ const getTasks = async (): Promise<void> => {
   tasks.value = data
 }
 
-const addTask = (): void => {
-  tasks.value.push({ id: 0, task: task.value, completed: false })
+const addTask = async (): Promise<void> => {
+  const response = await fetch('http://localhost:3000/tasks', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ task: task.value, completed: false })
+  })
+  const data = await response.json()
+  tasks.value.push(data)
   task.value = ''
-  // id++
 }
 
-const deleteTask = (id: number): void => {
-  const index = tasks.value.findIndex((task) => task.id === id)
-  tasks.value.splice(index, 1)
+const putTask = async (id: number): Promise<void> => {
+  const target = tasks.value.find((t) => t.id === id)
+  const response = await fetch('http://localhost:3000/tasks', {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ id, completed: target?.completed })
+  })
+  const data = await response.json()
+  if (tasks.value && data) {
+    const currentTask = tasks.value.find((task) => task.id === data[0].id)
+    currentTask!.completed = data[0].completed
+  }
+}
+
+const deleteTask = async (id: number): Promise<void> => {
+  const response = await fetch('http://localhost:3000/tasks', {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ id })
+  })
+  const data = await response.json()
+  if (tasks.value && data) {
+    const index = tasks.value.findIndex((task) => task.id === data.id)
+    tasks.value.splice(index, 1)
+  }
 }
 
 /***********
@@ -51,14 +84,10 @@ getTasks()
 <template>
   <h1>Tasks</h1>
   <ul>
-    <li
-      v-for="task in tasks"
-      :key="task.id"
-      :style="task.completed ? 'text-decoration:line-through' : ''"
-    >
-      <span><input type="checkbox" v-model="task.completed" /></span>
-      <span>{{ task.task }}</span>
-      <button @click="deleteTask(task.id)">削除</button>
+    <li v-for="t in tasks" :key="t.id" :style="t.completed ? 'text-decoration:line-through' : ''">
+      <span><input type="checkbox" v-model="t.completed" @change="putTask(t.id)" /></span>
+      <span>{{ t.task }}</span>
+      <button @click="deleteTask(t.id)">削除</button>
     </li>
   </ul>
   <form @submit.prevent="addTask">
