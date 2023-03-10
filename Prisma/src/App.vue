@@ -82,7 +82,7 @@ getTasks()
 </script>
 
 <template>
-  <h1>Tasks</h1>
+  <h1>Tasks by Supabase with Prisma</h1>
   <ul>
     <li v-for="t in tasks" :key="t.id" :style="t.completed ? 'text-decoration:line-through' : ''">
       <span><input type="checkbox" v-model="t.completed" @change="putTask(t.id)" /></span>
